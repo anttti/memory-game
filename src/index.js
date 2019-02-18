@@ -3,7 +3,7 @@ import "../assets/styles.scss";
 
 const config = {
   type: Phaser.AUTO,
-  backgroundColor: "#000000",
+  backgroundColor: "#5df4f0",
   scale: {
     parent: "container",
     mode: Phaser.Scale.FIT,
@@ -26,29 +26,96 @@ const config = {
 const game = new Phaser.Game(config);
 
 function preload() {
-  this.load.setBaseURL("http://labs.phaser.io");
+  this.load.setBaseURL("/");
 
-  this.load.image("sky", "assets/skies/space3.png");
-  this.load.image("logo", "assets/sprites/phaser3-logo.png");
-  this.load.image("red", "assets/particles/red.png");
+  this.load.image("card", "assets/Card.png");
+  this.load.image("CardA", "assets/CardA.png");
+  this.load.image("CardB", "assets/CardB.png");
+  this.load.image("CardC", "assets/CardC.png");
+  this.load.image("CardD", "assets/CardD.png");
+  this.load.image("CardE", "assets/CardE.png");
+  this.load.image("CardF", "assets/CardF.png");
+  this.load.image("CardG", "assets/CardG.png");
+  this.load.image("CardH", "assets/CardH.png");
+  this.load.image("bg", "assets/bg.png");
+}
+
+function shuffle(a) {
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
 }
 
 function create() {
-  this.add.image(400, 300, "sky");
+  this.add.image(400, 300, "bg");
 
-  const particles = this.add.particles("red");
+  let curX = 200;
+  let curY = 300;
 
-  const emitter = particles.createEmitter({
-    speed: 100,
-    scale: { start: 1, end: 0 },
-    blendMode: "ADD"
-  });
+  const faces = shuffle([
+    "CardA",
+    "CardA",
+    "CardB",
+    "CardB",
+    "CardC",
+    "CardC",
+    "CardD",
+    "CardD",
+    "CardE",
+    "CardE",
+    "CardF",
+    "CardF",
+    "CardG",
+    "CardG",
+    "CardH",
+    "CardH"
+  ]);
 
-  const logo = this.physics.add.image(400, 100, "logo");
+  const cardBacks = [];
+  const cardFaces = [];
+  let i = 0;
+  for (let y = 0; y < 4; y++) {
+    for (let x = 0; x < 4; x++) {
+      cardBacks.push(
+        this.add
+          .image(x * 150 + 175, y * 150 + 75, "card")
+          .setData("index", i)
+          .setData("isFace", false)
+          .setScale(0.3)
+          .setInteractive()
+      );
+      cardFaces.push(
+        this.add
+          .image(x * 150 + 175, y * 150 + 75, faces[i])
+          .setData("index", i)
+          .setData("isFace", true)
+          .setScale(0.3)
+          .setInteractive()
+          .setVisible(false)
+      );
+      i++;
+    }
+  }
 
-  logo.setVelocity(100, 200);
-  logo.setBounce(1, 1);
-  logo.setCollideWorldBounds(true);
-
-  emitter.startFollow(logo);
+  this.input.on(
+    "gameobjectdown",
+    function(pointer, gameObject) {
+      if (gameObject.getData("isFace")) {
+        cardFaces[gameObject.getData("index")].setVisible(false);
+        cardBacks[gameObject.getData("index")].setVisible(true);
+      } else {
+        cardFaces[gameObject.getData("index")].setVisible(true);
+        cardBacks[gameObject.getData("index")].setVisible(false);
+      }
+      //  Will contain the top-most Game Object (in the display list)
+      // this.tweens.add({
+      //   targets: gameObject,
+      //   // x: { value: 1100, duration: 1500, ease: "Power2" },
+      //   y: { value: 500, duration: 500, ease: "Bounce.easeOut", delay: 150 }
+      // });
+    },
+    this
+  );
 }
