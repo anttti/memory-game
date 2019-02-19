@@ -19,7 +19,8 @@ const config = {
   },
   scene: {
     preload: preload,
-    create: create
+    create: create,
+    update: update
   }
 };
 
@@ -47,6 +48,9 @@ function shuffle(a) {
   }
   return a;
 }
+
+let openCards = [];
+let openCardValues = [];
 
 function create() {
   this.add.image(400, 300, "bg");
@@ -91,6 +95,7 @@ function create() {
           .image(x * 150 + 175, y * 150 + 75, faces[i])
           .setData("index", i)
           .setData("isFace", true)
+          .setData("value", faces[i])
           .setScale(0.3)
           .setInteractive()
           .setVisible(false)
@@ -102,20 +107,41 @@ function create() {
   this.input.on(
     "gameobjectdown",
     function(pointer, gameObject) {
-      if (gameObject.getData("isFace")) {
-        cardFaces[gameObject.getData("index")].setVisible(false);
-        cardBacks[gameObject.getData("index")].setVisible(true);
-      } else {
-        cardFaces[gameObject.getData("index")].setVisible(true);
-        cardBacks[gameObject.getData("index")].setVisible(false);
+      const isAllowedMove =
+        openCardValues.length < 2 && !gameObject.getData("isFace");
+
+      if (isAllowedMove) {
+        const face = cardFaces[gameObject.getData("index")];
+        const back = cardBacks[gameObject.getData("index")];
+        face.setVisible(true);
+        back.setVisible(false);
+        openCards.push(face);
+        openCards.push(back);
+        openCardValues.push(face.getData("value"));
       }
-      //  Will contain the top-most Game Object (in the display list)
-      // this.tweens.add({
-      //   targets: gameObject,
-      //   // x: { value: 1100, duration: 1500, ease: "Power2" },
-      //   y: { value: 500, duration: 500, ease: "Bounce.easeOut", delay: 150 }
-      // });
     },
     this
   );
+}
+
+let timeTurnMade = 0;
+function update(time, delta) {
+  if (openCardValues.length === 2 && timeTurnMade === 0) {
+    timeTurnMade = time;
+  }
+
+  if (openCardValues.length === 2 && time - timeTurnMade > 2000) {
+    if (openCardValues[0] === openCardValues[1]) {
+      openCards.forEach(card => {
+        card.setVisible(false);
+      });
+    } else {
+      openCards.forEach(card => {
+        card.setVisible(!card.visible);
+      });
+    }
+    openCards = [];
+    openCardValues = [];
+    timeTurnMade = 0;
+  }
 }
