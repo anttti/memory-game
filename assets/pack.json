@@ -1,0 +1,56 @@
+{
+  "preload": {
+    "files": [
+      {
+        "type": "image",
+        "key": "bg",
+        "url": "assets/bg.png"
+      },
+      {
+        "type": "image",
+        "key": "card",
+        "url": "assets/Card.png"
+      },
+      {
+        "type": "image",
+        "key": "cardA",
+        "url": "assets/CardA.png"
+      },
+      {
+        "type": "image",
+        "key": "cardB",
+        "url": "assets/CardB.png"
+      },
+      {
+        "type": "image",
+        "key": "cardC",
+        "url": "assets/CardC.png"
+      },
+      {
+        "type": "image",
+        "key": "cardD",
+        "url": "assets/CardD.png"
+      },
+      {
+        "type": "image",
+        "key": "cardE",
+        "url": "assets/CardE.png"
+      },
+      {
+        "type": "image",
+        "key": "cardF",
+        "url": "assets/CardF.png"
+      },
+      {
+        "type": "image",
+        "key": "cardG",
+        "url": "assets/CardG.png"
+      },
+      {
+        "type": "image",
+        "key": "cardH",
+        "url": "assets/CardH.png"
+      }
+    ]
+  }
+}
